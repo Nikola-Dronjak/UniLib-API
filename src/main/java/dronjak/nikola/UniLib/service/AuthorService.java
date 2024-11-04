@@ -129,6 +129,7 @@ public class AuthorService {
 			if (!authorFromDb.isPresent())
 				throw new RuntimeException("There is no author with the given id.");
 
+			authorFromDb.get().getBooks().forEach(book -> book.getAuthors().remove(authorFromDb.get()));
 			authorRepository.deleteById(id);
 			AuthorDTO deletedAuthorDTO = convertToDTO(authorFromDb.get());
 			return ResponseEntity.ok(deletedAuthorDTO);

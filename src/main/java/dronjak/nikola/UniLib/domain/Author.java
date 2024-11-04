@@ -2,6 +2,7 @@ package dronjak.nikola.UniLib.domain;
 
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,28 +16,33 @@ public class Author {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int authorId;
-	
+
 	@NotBlank(message = "The name of the author is required.")
 	@Size(min = 5, message = "The name of the author has to have at least 5 characters.")
 	private String name;
-	
+
 	@NotNull(message = "The author's date of birth is required.")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private GregorianCalendar dateOfBirth;
-	
+
 	@NotNull(message = "The author's date of death is required.")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private GregorianCalendar dateOfDeath;
-	
+
+	@ManyToMany
+	private Set<Book> books;
+
 	public Author() {
-		
+
 	}
-	
-	public Author(int authorId, String name, GregorianCalendar dateOfBirth, GregorianCalendar dateOfDeath) {
+
+	public Author(int authorId, String name, GregorianCalendar dateOfBirth, GregorianCalendar dateOfDeath,
+			Set<Book> books) {
 		this.authorId = authorId;
 		this.name = name;
 		this.dateOfBirth = dateOfBirth;
 		this.dateOfDeath = dateOfDeath;
+		this.books = books;
 	}
 
 	public int getAuthorId() {
@@ -70,11 +76,19 @@ public class Author {
 	public void setDateOfDeath(GregorianCalendar dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
 	}
-	
+
+	public Set<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(Set<Book> books) {
+		this.books = books;
+	}
+
 	@Override
 	public String toString() {
 		return "Author [authorId=" + authorId + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath="
-				+ dateOfDeath + "]";
+				+ dateOfDeath + ", books=" + books + "]";
 	}
 
 	@Override

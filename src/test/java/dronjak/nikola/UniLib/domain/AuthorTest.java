@@ -3,6 +3,7 @@ package dronjak.nikola.UniLib.domain;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,8 @@ import jakarta.validation.ValidatorFactory;
 
 class AuthorTest {
 
+	Set<Book> books;
+
 	Author author;
 
 	private static Validator validator;
@@ -27,11 +30,16 @@ class AuthorTest {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();
 
-		author = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4));
+		books = new HashSet<Book>();
+
+		author = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4),
+				books);
 	}
 
 	@AfterEach
 	void tearDown() throws Exception {
+		books = null;
+
 		author = null;
 	}
 
@@ -77,7 +85,6 @@ class AuthorTest {
 
 	@Test
 	public void testValidAuthor() {
-
 		Set<ConstraintViolation<Author>> violations = validator.validate(author);
 		assertTrue(violations.isEmpty());
 	}
@@ -109,7 +116,7 @@ class AuthorTest {
 				: new GregorianCalendar(2024, 10, 2);
 		GregorianCalendar deathDate = dateOfDeath.equals("2024-10-4") ? new GregorianCalendar(2024, 10, 4)
 				: new GregorianCalendar(2024, 10, 5);
-		Author newAuthor = new Author(authorId, name, birthDate, deathDate);
+		Author newAuthor = new Author(authorId, name, birthDate, deathDate, null);
 
 		assertEquals(eq, author.equals(newAuthor));
 	}

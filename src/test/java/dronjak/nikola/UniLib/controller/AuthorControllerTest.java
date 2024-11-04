@@ -10,10 +10,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dronjak.nikola.UniLib.domain.Author;
+import dronjak.nikola.UniLib.domain.Book;
 import dronjak.nikola.UniLib.dto.AuthorDTO;
 import dronjak.nikola.UniLib.service.AuthorService;
 
 @SpringBootTest
 class AuthorControllerTest {
+
+	Set<Book> books;
 
 	Author author1;
 
@@ -47,12 +51,18 @@ class AuthorControllerTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		author1 = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4));
-		author2 = new Author(2, "Mika Mikic", new GregorianCalendar(2024, 10, 5), new GregorianCalendar(2024, 10, 6));
+		books = new HashSet<Book>();
+
+		author1 = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4),
+				books);
+		author2 = new Author(2, "Mika Mikic", new GregorianCalendar(2024, 10, 5), new GregorianCalendar(2024, 10, 6),
+				books);
 	}
 
 	@AfterEach
 	void tearDown() throws Exception {
+		books = null;
+
 		author1 = null;
 		author2 = null;
 	}

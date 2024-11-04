@@ -7,8 +7,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,11 +23,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import dronjak.nikola.UniLib.domain.Author;
+import dronjak.nikola.UniLib.domain.Book;
 import dronjak.nikola.UniLib.dto.AuthorDTO;
 import dronjak.nikola.UniLib.repository.AuthorRepository;
 
 @SpringBootTest
 class AuthorServiceTest {
+
+	Set<Book> books;
 
 	Author author1;
 
@@ -39,12 +44,18 @@ class AuthorServiceTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		author1 = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4));
-		author2 = new Author(2, "Mika Mikic", new GregorianCalendar(2024, 10, 5), new GregorianCalendar(2024, 10, 6));
+		books = new HashSet<Book>();
+
+		author1 = new Author(1, "Pera Peric", new GregorianCalendar(2024, 10, 3), new GregorianCalendar(2024, 10, 4),
+				books);
+		author2 = new Author(2, "Mika Mikic", new GregorianCalendar(2024, 10, 5), new GregorianCalendar(2024, 10, 6),
+				books);
 	}
 
 	@AfterEach
 	void tearDown() throws Exception {
+		books = null;
+
 		author1 = null;
 		author2 = null;
 	}
