@@ -16,7 +16,7 @@ public class BookLoan {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int bookLoandId;
+	private int bookLoanId;
 
 	private GregorianCalendar loanDate;
 
@@ -28,15 +28,15 @@ public class BookLoan {
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "book_isbn")
+	@JoinColumn(name = "isbn")
 	private Book book;
 
 	public BookLoan() {
 
 	}
 
-	public BookLoan(int bookLoandId, GregorianCalendar loanDate, GregorianCalendar returnDate, User user, Book book) {
-		this.bookLoandId = bookLoandId;
+	public BookLoan(int bookLoanId, GregorianCalendar loanDate, GregorianCalendar returnDate, User user, Book book) {
+		this.bookLoanId = bookLoanId;
 		this.loanDate = loanDate;
 		this.returnDate = returnDate;
 		this.user = user;
@@ -44,11 +44,11 @@ public class BookLoan {
 	}
 
 	public int getBookLoandId() {
-		return bookLoandId;
+		return bookLoanId;
 	}
 
 	public void setBookLoandId(int bookLoandId) {
-		this.bookLoandId = bookLoandId;
+		this.bookLoanId = bookLoandId;
 	}
 
 	public GregorianCalendar getLoanDate() {
@@ -85,13 +85,13 @@ public class BookLoan {
 
 	@Override
 	public String toString() {
-		return "BookLoan [bookLoandId=" + bookLoandId + ", loanDate=" + loanDate + ", returnDate=" + returnDate
+		return "BookLoan [bookLoandId=" + bookLoanId + ", loanDate=" + loanDate + ", returnDate=" + returnDate
 				+ ", user=" + user + ", book=" + book + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(book, bookLoandId, loanDate, returnDate, user);
+		return Objects.hash(book, bookLoanId, loanDate, returnDate, user);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class BookLoan {
 		if (getClass() != obj.getClass())
 			return false;
 		BookLoan other = (BookLoan) obj;
-		return Objects.equals(book, other.book) && bookLoandId == other.bookLoandId
+		return Objects.equals(book, other.book) && bookLoanId == other.bookLoanId
 				&& Objects.equals(loanDate, other.loanDate) && Objects.equals(returnDate, other.returnDate)
 				&& Objects.equals(user, other.user);
 	}

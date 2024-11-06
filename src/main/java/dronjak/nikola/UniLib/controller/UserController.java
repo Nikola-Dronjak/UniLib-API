@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dronjak.nikola.UniLib.dto.BookLoanDTO;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.service.UserService;
 
@@ -20,14 +21,14 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@PostMapping("/loanBook/{userId}/{isbn}")
-	public ResponseEntity<?> loanBook(@PathVariable Integer userId, @PathVariable String isbn) {
-		return userService.loanBook(userId, isbn);
+	@PostMapping("/loanBook")
+	public ResponseEntity<?> loanBook(@RequestBody BookLoanDTO bookLoanDTO) {
+		return userService.loanBook(bookLoanDTO);
 	}
 
-	@PostMapping("/returnBook/{}")
-	public ResponseEntity<?> returnBook(@PathVariable String isbn) {
-		return userService.returnBook(isbn);
+	@PostMapping("/returnBook")
+	public ResponseEntity<?> returnBook(@RequestBody BookLoanDTO bookLoanDTO) {
+		return userService.returnBook(bookLoanDTO);
 	}
 
 	@PutMapping("/{id}")

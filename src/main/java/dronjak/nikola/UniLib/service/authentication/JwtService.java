@@ -22,7 +22,6 @@ public class JwtService {
 	private String secretkey = "";
 
 	public JwtService() {
-
 		try {
 			KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
 			SecretKey sk = keyGen.generateKey();
@@ -35,8 +34,7 @@ public class JwtService {
 	public String generateToken(String username) {
 		Map<String, Object> claims = new HashMap<>();
 		return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30)).and().signWith(getKey()).compact();
-
+				.expiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000)).and().signWith(getKey()).compact();
 	}
 
 	private SecretKey getKey() {

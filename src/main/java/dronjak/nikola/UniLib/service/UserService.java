@@ -16,6 +16,7 @@ import dronjak.nikola.UniLib.domain.Book;
 import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.User;
 import dronjak.nikola.UniLib.domain.UserRole;
+import dronjak.nikola.UniLib.dto.BookLoanDTO;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.repository.BookLoanRepository;
 import dronjak.nikola.UniLib.repository.BookRepository;
@@ -44,22 +45,37 @@ public class UserService {
 		this.validator = factory.getValidator();
 	}
 
-	public ResponseEntity<?> loanBook(int userId, String isbn) {
+	public ResponseEntity<?> loanBook(BookLoanDTO bookLoanDTO) {
 		try {
-			Optional<User> userFromDb = userRepository.findById(userId);
+			Set<ConstraintViolation<BookLoanDTO>> violations = validator.validate(bookLoanDTO);
+			if (!violations.isEmpty()) {
+				Map<String, String> errors = new HashMap<>();
+				for (ConstraintViolation<BookLoanDTO> violation : violations) {
+					errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+				}
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+			}
+
+			Optional<User> userFromDb = userRepository.findById(bookLoanDTO.getUserId());
 			if (!userFromDb.isPresent())
 				throw new RuntimeException("There is no user with the given id.");
 			User user = userFromDb.get();
 
-			Optional<Book> bookFromDb = bookRepository.findById(isbn);
+			Optional<Book> bookFromDb = bookRepository.findById(bookLoanDTO.getBookISBN());
 			if (!bookFromDb.isPresent())
 				throw new RuntimeException("There is no book with the given isbn.");
+
+			Optional<BookLoan> activeBookLoan = bookLoanRepository.findActiveLoanByUserAndBook(bookLoanDTO.getUserId(),
+					bookLoanDTO.getBookISBN());
+			if (activeBookLoan.isPresent())
+				throw new RuntimeException(
+						"There is an active book loan for the given userId and bookISBN combination. You cannot loan the same book twice. Please return the book first.");
 
 			Book book = bookFromDb.get();
 			if (book.getNumberOfCopies() < 0 || !book.getAvailable())
 				throw new RuntimeException("There are no available copies of this book.");
 
-			book.setIsbn(isbn);
+			book.setIsbn(bookLoanDTO.getBookISBN());
 			book.setNumberOfCopies(book.getNumberOfCopies() - 1);
 			book.setAvailable(book.getNumberOfCopies() > 0);
 			bookRepository.save(book);
@@ -76,22 +92,36 @@ public class UserService {
 		}
 	}
 
-	public ResponseEntity<?> returnBook(String isbn) {
+	public ResponseEntity<?> returnBook(BookLoanDTO bookLoanDTO) {
 		try {
-			Optional<BookLoan> bookLoanFromDb = bookLoanRepository.findByBook_Isbn(isbn);
+			Set<ConstraintViolation<BookLoanDTO>> violations = validator.validate(bookLoanDTO);
+			if (!violations.isEmpty()) {
+				Map<String, String> errors = new HashMap<>();
+				for (ConstraintViolation<BookLoanDTO> violation : violations) {
+					errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+				}
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+			}
+
+			Optional<BookLoan> bookLoanFromDb = bookLoanRepository.findActiveLoanByUserAndBook(bookLoanDTO.getUserId(),
+					bookLoanDTO.getBookISBN());
 			if (!bookLoanFromDb.isPresent())
-				throw new RuntimeException("There is no book loan with the given isbn.");
+				throw new RuntimeException(
+						"There is no active book loan for the given userId and bookISBN combination.");
 			BookLoan bookLoan = bookLoanFromDb.get();
 
-			User user = bookLoan.getUser();
+			User user = bookLoanFromDb.get().getUser();
 
-			Book book = bookLoan.getBook();
-			book.setIsbn(isbn);
+			Book book = bookLoanFromDb.get().getBook();
+			book.setIsbn(bookLoanDTO.getBookISBN());
 			book.setNumberOfCopies(book.getNumberOfCopies() + 1);
 			book.setAvailable(book.getNumberOfCopies() > 0);
 			bookRepository.save(book);
 
-			bookLoanRepository.deleteById(bookLoan.getBookLoandId());
+			bookLoan.setBookLoandId(bookLoanFromDb.get().getBookLoandId());
+			bookLoan.setLoanDate(bookLoanFromDb.get().getLoanDate());
+			bookLoan.setReturnDate(new GregorianCalendar());
+			bookLoanRepository.save(bookLoan);
 			return ResponseEntity.ok("User: " + user + " returned book: " + book);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

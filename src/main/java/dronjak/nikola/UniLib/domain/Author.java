@@ -3,6 +3,7 @@ package dronjak.nikola.UniLib.domain;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -87,8 +88,9 @@ public class Author {
 
 	@Override
 	public String toString() {
+		String bookTitles = books.stream().map(Book::getTitle).collect(Collectors.joining(", "));
 		return "Author [authorId=" + authorId + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath="
-				+ dateOfDeath + ", books=" + books + "]";
+				+ dateOfDeath + ", books=" + bookTitles + "]";
 	}
 
 	@Override

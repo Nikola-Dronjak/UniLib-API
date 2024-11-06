@@ -3,6 +3,7 @@ package dronjak.nikola.UniLib.domain;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -111,8 +112,9 @@ public class Book {
 
 	@Override
 	public String toString() {
+		String authorNames = authors.stream().map(Author::getName).collect(Collectors.joining(", "));
 		return "Book [isbn=" + isbn + ", title=" + title + ", genre=" + genre + ", numberOfPages=" + numberOfPages
-				+ ", numberOfCopies=" + numberOfCopies + ", available=" + available + ", authors=" + authors + "]";
+				+ ", numberOfCopies=" + numberOfCopies + ", available=" + available + ", authors=" + authorNames + "]";
 	}
 
 	@Override
