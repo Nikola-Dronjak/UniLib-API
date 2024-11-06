@@ -12,9 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dronjak.nikola.UniLib.domain.Book;
+import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.User;
 import dronjak.nikola.UniLib.domain.UserRole;
 import dronjak.nikola.UniLib.dto.UserDTO;
+import dronjak.nikola.UniLib.repository.BookLoanRepository;
+import dronjak.nikola.UniLib.repository.BookRepository;
 import dronjak.nikola.UniLib.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -25,6 +29,12 @@ import jakarta.validation.ValidatorFactory;
 public class UserService {
 
 	@Autowired
+	private BookRepository bookRepository;
+
+	@Autowired
+	private BookLoanRepository bookLoanRepository;
+
+	@Autowired
 	private UserRepository userRepository;
 
 	private Validator validator;
@@ -32,6 +42,60 @@ public class UserService {
 	public UserService() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		this.validator = factory.getValidator();
+	}
+
+	public ResponseEntity<?> loanBook(int userId, String isbn) {
+		try {
+			Optional<User> userFromDb = userRepository.findById(userId);
+			if (!userFromDb.isPresent())
+				throw new RuntimeException("There is no user with the given id.");
+			User user = userFromDb.get();
+
+			Optional<Book> bookFromDb = bookRepository.findById(isbn);
+			if (!bookFromDb.isPresent())
+				throw new RuntimeException("There is no book with the given isbn.");
+
+			Book book = bookFromDb.get();
+			if (book.getNumberOfCopies() < 0 || !book.getAvailable())
+				throw new RuntimeException("There are no available copies of this book.");
+
+			book.setIsbn(isbn);
+			book.setNumberOfCopies(book.getNumberOfCopies() - 1);
+			book.setAvailable(book.getNumberOfCopies() > 0);
+			bookRepository.save(book);
+
+			BookLoan bookLoan = new BookLoan();
+			bookLoan.setUser(user);
+			bookLoan.setBook(book);
+			bookLoan.setLoanDate(new GregorianCalendar());
+			bookLoan.setReturnDate(null);
+			bookLoanRepository.save(bookLoan);
+			return ResponseEntity.ok("A copy of the book: " + book + " was loand out to user: " + user);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	public ResponseEntity<?> returnBook(String isbn) {
+		try {
+			Optional<BookLoan> bookLoanFromDb = bookLoanRepository.findByBook_Isbn(isbn);
+			if (!bookLoanFromDb.isPresent())
+				throw new RuntimeException("There is no book loan with the given isbn.");
+			BookLoan bookLoan = bookLoanFromDb.get();
+
+			User user = bookLoan.getUser();
+
+			Book book = bookLoan.getBook();
+			book.setIsbn(isbn);
+			book.setNumberOfCopies(book.getNumberOfCopies() + 1);
+			book.setAvailable(book.getNumberOfCopies() > 0);
+			bookRepository.save(book);
+
+			bookLoanRepository.deleteById(bookLoan.getBookLoandId());
+			return ResponseEntity.ok("User: " + user + " returned book: " + book);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
 	}
 
 	public ResponseEntity<?> update(Integer id, UserDTO userDTO) {
