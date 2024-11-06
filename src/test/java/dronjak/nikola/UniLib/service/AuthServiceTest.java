@@ -2,7 +2,6 @@ package dronjak.nikola.UniLib.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -116,8 +115,10 @@ class AuthServiceTest {
 		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
 				.thenReturn(authentication);
 
+		when(authentication.isAuthenticated()).thenReturn(true);
+
 		String expectedToken = "mocked-jwt-token";
-		when(jwtService.generateToken(anyString())).thenReturn(expectedToken);
+		when(jwtService.generateToken(user1.getEmail())).thenReturn(expectedToken);
 
 		ResponseEntity<?> response = authService.login(convertToDTO(user1));
 

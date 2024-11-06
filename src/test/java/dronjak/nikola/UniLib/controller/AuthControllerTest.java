@@ -89,10 +89,11 @@ class AuthControllerTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	void testLoginUser() throws Exception {
-		when(authService.login(convertToDTO(user1))).thenReturn((ResponseEntity) ResponseEntity.ok("x-mock-token"));
+		when(authService.login(any(UserDTO.class))).thenReturn((ResponseEntity) ResponseEntity.ok("x-mock-token"));
 
 		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
-		mockMvc.perform(post("/api/users/login").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(post("/api/users/login").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"email\": \"pera@gmail.com\", \"password\": \"test123\"}")).andExpect(status().isOk())
 				.andExpect(content().string("x-mock-token"));
 	}
 
