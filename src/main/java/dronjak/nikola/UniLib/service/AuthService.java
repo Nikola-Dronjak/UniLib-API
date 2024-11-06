@@ -80,7 +80,7 @@ public class AuthService {
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
 		}
 	}
 

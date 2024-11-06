@@ -178,7 +178,7 @@ class AuthorServiceTest {
 		birthDate.add(Calendar.DAY_OF_MONTH, 1);
 		authorDTO.setDateOfBirth(birthDate);
 
-		ResponseEntity<?> response = authorService.add(authorDTO);
+		ResponseEntity<?> response = authorService.update(1, authorDTO);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertEquals("The author's date of birth has to be before his/hers date of death.", response.getBody());
@@ -195,7 +195,7 @@ class AuthorServiceTest {
 		deathDate.add(Calendar.DAY_OF_MONTH, 1);
 		authorDTO.setDateOfBirth(deathDate);
 
-		ResponseEntity<?> response = authorService.add(authorDTO);
+		ResponseEntity<?> response = authorService.update(1, authorDTO);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertEquals("The author's date of death has to be after his/hers date of birth.", response.getBody());

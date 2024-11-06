@@ -44,7 +44,7 @@ public class User implements UserDetails {
 
 	private UserRole role;
 
-	@NotNull(message = "The users's date of birth is required.")
+	@NotNull(message = "The user's date of birth is required.")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private GregorianCalendar dateOfBirth;
 
