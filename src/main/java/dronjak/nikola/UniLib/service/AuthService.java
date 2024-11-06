@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dronjak.nikola.UniLib.domain.User;
@@ -60,6 +61,7 @@ public class AuthService {
 			if (userRepository.findByEmail(userDTO.getEmail()).isPresent())
 				throw new RuntimeException("This user already exists.");
 
+			user.setPassword(new BCryptPasswordEncoder(12).encode(userDTO.getPassword()));
 			user.setRole(UserRole.STUDENT);
 			userRepository.save(user);
 			return ResponseEntity.ok("Account successfully created.");

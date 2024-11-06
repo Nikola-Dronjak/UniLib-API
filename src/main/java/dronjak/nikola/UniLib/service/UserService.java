@@ -9,9 +9,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dronjak.nikola.UniLib.domain.User;
+import dronjak.nikola.UniLib.domain.UserRole;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
@@ -59,6 +61,8 @@ public class UserService {
 			}
 
 			user.setUserId(id);
+			user.setPassword(new BCryptPasswordEncoder(12).encode(userDTO.getPassword()));
+			user.setRole(UserRole.STUDENT);
 			User updatedUser = userRepository.save(user);
 			UserDTO updatedUserDTO = convertToDTO(updatedUser);
 			return ResponseEntity.ok(updatedUserDTO);

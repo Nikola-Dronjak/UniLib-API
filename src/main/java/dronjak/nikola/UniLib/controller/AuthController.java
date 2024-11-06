@@ -11,19 +11,19 @@ import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.service.AuthService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/users")
 public class AuthController {
 
 	@Autowired
 	private AuthService authService;
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
 		return authService.register(userDTO);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<?> loginUser(@RequestBody UserDTO userDTO) {
 		return authService.login(userDTO);
 	}
 }

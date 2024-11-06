@@ -16,7 +16,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@SuppressWarnings("serial")
 @Entity
+@Table(name = "Users")
 public class User implements UserDetails {
 
 	@Id
@@ -40,7 +42,6 @@ public class User implements UserDetails {
 	@Size(min = 5, message = "The password of the user has to have at least 5 characters.")
 	private String password;
 
-	@NotNull(message = "The role of the user is required.")
 	private UserRole role;
 
 	@NotNull(message = "The users's date of birth is required.")
