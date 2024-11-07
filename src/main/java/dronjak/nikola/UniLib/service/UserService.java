@@ -110,16 +110,16 @@ public class UserService {
 						"There is no active book loan for the given userId and bookISBN combination.");
 			BookLoan bookLoan = bookLoanFromDb.get();
 
-			User user = bookLoanFromDb.get().getUser();
+			User user = bookLoan.getUser();
 
-			Book book = bookLoanFromDb.get().getBook();
+			Book book = bookLoan.getBook();
 			book.setIsbn(bookLoanDTO.getBookISBN());
 			book.setNumberOfCopies(book.getNumberOfCopies() + 1);
 			book.setAvailable(book.getNumberOfCopies() > 0);
 			bookRepository.save(book);
 
-			bookLoan.setBookLoandId(bookLoanFromDb.get().getBookLoandId());
-			bookLoan.setLoanDate(bookLoanFromDb.get().getLoanDate());
+			bookLoan.setBookLoandId(bookLoan.getBookLoandId());
+			bookLoan.setLoanDate(bookLoan.getLoanDate());
 			bookLoan.setReturnDate(new GregorianCalendar());
 			bookLoanRepository.save(bookLoan);
 			return ResponseEntity.ok("User: " + user + " returned book: " + book);
