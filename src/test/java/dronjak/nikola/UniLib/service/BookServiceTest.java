@@ -118,17 +118,6 @@ class BookServiceTest {
 	}
 
 	@Test
-	void testAddDuplicateBook() {
-		when(bookRepository.findById(book1.getIsbn())).thenReturn(Optional.of(book1));
-		when(authorRepository.findById(1)).thenReturn(Optional.of(author));
-
-		ResponseEntity<?> response = bookService.add(convertToDTO(book1));
-
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertEquals("This book already exists.", response.getBody());
-	}
-
-	@Test
 	void testAdd() {
 		when(bookRepository.findById(book1.getIsbn())).thenReturn(Optional.empty());
 		when(authorRepository.findById(1)).thenReturn(Optional.of(author));

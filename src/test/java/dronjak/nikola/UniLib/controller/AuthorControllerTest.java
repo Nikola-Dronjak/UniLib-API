@@ -156,7 +156,7 @@ class AuthorControllerTest {
 	}
 
 	@Test
-	void testDeleteAuthorrError() throws Exception {
+	void testDeleteAuthorError() throws Exception {
 		try {
 			lenient().when(authorService.delete(1)).thenThrow(new RuntimeException());
 		} catch (Exception e) {
