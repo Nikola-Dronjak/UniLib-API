@@ -89,8 +89,8 @@ public class Author {
 	@Override
 	public String toString() {
 		String bookTitles = books.stream().map(Book::getTitle).collect(Collectors.joining(", "));
-		return "Author [authorId=" + authorId + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath="
-				+ dateOfDeath + ", books=" + bookTitles + "]";
+		return "Author [name=" + name + ", dateOfBirth=" + dateOfBirth.getTime() + ", dateOfDeath="
+				+ dateOfDeath.getTime() + ", books=" + bookTitles + "]";
 	}
 
 	@Override

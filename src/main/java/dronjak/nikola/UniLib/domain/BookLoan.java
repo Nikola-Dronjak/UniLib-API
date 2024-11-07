@@ -85,8 +85,8 @@ public class BookLoan {
 
 	@Override
 	public String toString() {
-		return "BookLoan [bookLoandId=" + bookLoanId + ", loanDate=" + loanDate + ", returnDate=" + returnDate
-				+ ", user=" + user + ", book=" + book + "]";
+		return "BookLoan [loanDate=" + loanDate.getTime() + ", returnDate=" + returnDate.getTime() + ", user=" + user
+				+ ", book=" + book + "]";
 	}
 
 	@Override

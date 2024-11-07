@@ -117,8 +117,8 @@ public class User implements UserDetails {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", password=" + password + ", role=" + role + ", dateOfBirth=" + dateOfBirth + "]";
+		return "User [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", password=" + password
+				+ ", role=" + role + ", dateOfBirth=" + dateOfBirth.getTime() + "]";
 	}
 
 	@Override
