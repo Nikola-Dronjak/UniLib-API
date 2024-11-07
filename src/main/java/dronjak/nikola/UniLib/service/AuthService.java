@@ -64,7 +64,7 @@ public class AuthService {
 			user.setPassword(new BCryptPasswordEncoder(12).encode(userDTO.getPassword()));
 			user.setRole(UserRole.STUDENT);
 			userRepository.save(user);
-			return ResponseEntity.ok("Account successfully created.");
+			return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail()));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

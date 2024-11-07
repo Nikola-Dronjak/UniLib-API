@@ -95,7 +95,7 @@ class AuthServiceTest {
 		ResponseEntity<?> response = authService.register(convertToDTO(user1));
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals("Account successfully created.", response.getBody());
+		assertEquals(jwtService.generateToken(user1.getEmail()), response.getBody());
 	}
 
 	@Test
