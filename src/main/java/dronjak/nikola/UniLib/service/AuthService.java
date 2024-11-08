@@ -64,7 +64,7 @@ public class AuthService {
 			user.setPassword(new BCryptPasswordEncoder(12).encode(userDTO.getPassword()));
 			user.setRole(UserRole.STUDENT);
 			userRepository.save(user);
-			return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail()));
+			return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail(), UserRole.STUDENT));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
@@ -76,7 +76,7 @@ public class AuthService {
 					.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword()));
 
 			if (user.isAuthenticated())
-				return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail()));
+				return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail(), UserRole.STUDENT));
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
 		} catch (Exception e) {

@@ -7,6 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import dronjak.nikola.UniLib.domain.UserRole;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
@@ -31,8 +33,9 @@ public class JwtService {
 		}
 	}
 
-	public String generateToken(String username) {
+	public String generateToken(String username, UserRole role) {
 		Map<String, Object> claims = new HashMap<>();
+		claims.put("role", role.name());
 		return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000)).and().signWith(getKey()).compact();
 	}
@@ -44,6 +47,11 @@ public class JwtService {
 
 	public String extractUserName(String token) {
 		return extractClaim(token, Claims::getSubject);
+	}
+	
+	public UserRole extractRole(String token) {
+		String roleString = extractClaim(token, claims -> claims.get("role", String.class));
+	    return UserRole.valueOf(roleString);
 	}
 
 	private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {

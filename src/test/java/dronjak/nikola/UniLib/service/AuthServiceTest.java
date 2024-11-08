@@ -95,7 +95,7 @@ class AuthServiceTest {
 		ResponseEntity<?> response = authService.register(convertToDTO(user1));
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(jwtService.generateToken(user1.getEmail()), response.getBody());
+		assertEquals(jwtService.generateToken(user1.getEmail(), UserRole.STUDENT), response.getBody());
 	}
 
 	@Test
@@ -118,7 +118,7 @@ class AuthServiceTest {
 		when(authentication.isAuthenticated()).thenReturn(true);
 
 		String expectedToken = "mocked-jwt-token";
-		when(jwtService.generateToken(user1.getEmail())).thenReturn(expectedToken);
+		when(jwtService.generateToken(user1.getEmail(), UserRole.STUDENT)).thenReturn(expectedToken);
 
 		ResponseEntity<?> response = authService.login(convertToDTO(user1));
 
