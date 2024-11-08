@@ -117,8 +117,10 @@ class AuthServiceTest {
 
 		when(authentication.isAuthenticated()).thenReturn(true);
 
+		when(userRepository.findByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
+
 		String expectedToken = "mocked-jwt-token";
-		when(jwtService.generateToken(user1.getEmail(), UserRole.STUDENT)).thenReturn(expectedToken);
+		when(jwtService.generateToken(user1.getEmail(), user1.getRole())).thenReturn(expectedToken);
 
 		ResponseEntity<?> response = authService.login(convertToDTO(user1));
 
