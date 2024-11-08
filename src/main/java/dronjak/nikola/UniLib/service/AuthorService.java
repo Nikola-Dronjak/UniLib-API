@@ -140,6 +140,7 @@ public class AuthorService {
 
 	private AuthorDTO convertToDTO(Author author) {
 		AuthorDTO authorDTO = new AuthorDTO();
+		authorDTO.setAuthorId(author.getAuthorId());
 		authorDTO.setName(author.getName());
 		authorDTO.setDateOfBirth(author.getDateOfBirth());
 		authorDTO.setDateOfDeath(author.getDateOfDeath());

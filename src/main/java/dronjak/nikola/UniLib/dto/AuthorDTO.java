@@ -4,21 +4,32 @@ import java.util.GregorianCalendar;
 import java.util.Objects;
 
 public class AuthorDTO {
-	
+
+	private int authorId;
+
 	private String name;
-	
+
 	private GregorianCalendar dateOfBirth;
-	
+
 	private GregorianCalendar dateOfDeath;
-	
+
 	public AuthorDTO() {
-		
+
 	}
-	
-	public AuthorDTO(String name, GregorianCalendar dateOfBirth, GregorianCalendar dateOfDeath) {
+
+	public AuthorDTO(int authorId, String name, GregorianCalendar dateOfBirth, GregorianCalendar dateOfDeath) {
+		this.authorId = authorId;
 		this.name = name;
 		this.dateOfBirth = dateOfBirth;
 		this.dateOfDeath = dateOfDeath;
+	}
+
+	public int getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(int authorId) {
+		this.authorId = authorId;
 	}
 
 	public String getName() {
@@ -47,12 +58,13 @@ public class AuthorDTO {
 
 	@Override
 	public String toString() {
-		return "AuthorDTO [name=" + name + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath=" + dateOfDeath + "]";
+		return "AuthorDTO [authorId=" + authorId + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath="
+				+ dateOfDeath + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateOfBirth, dateOfDeath, name);
+		return Objects.hash(authorId, dateOfBirth, dateOfDeath, name);
 	}
 
 	@Override
@@ -64,7 +76,7 @@ public class AuthorDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		AuthorDTO other = (AuthorDTO) obj;
-		return Objects.equals(dateOfBirth, other.dateOfBirth) && Objects.equals(dateOfDeath, other.dateOfDeath)
-				&& Objects.equals(name, other.name);
+		return authorId == other.authorId && Objects.equals(dateOfBirth, other.dateOfBirth)
+				&& Objects.equals(dateOfDeath, other.dateOfDeath) && Objects.equals(name, other.name);
 	}
 }
