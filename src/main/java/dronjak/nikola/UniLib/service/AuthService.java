@@ -75,8 +75,10 @@ public class AuthService {
 			Authentication user = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword()));
 
-			if (user.isAuthenticated())
-				return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail(), UserRole.STUDENT));
+			if (user.isAuthenticated()) {
+				User userFromDb = userRepository.findByEmail(userDTO.getEmail()).get();
+				return ResponseEntity.ok(jwtService.generateToken(userDTO.getEmail(), userFromDb.getRole()));
+			}
 
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
 		} catch (Exception e) {
