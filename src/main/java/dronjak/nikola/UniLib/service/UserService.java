@@ -44,6 +44,19 @@ public class UserService {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		this.validator = factory.getValidator();
 	}
+	
+	public ResponseEntity<?> getByEmail(String email) {
+		try {
+			Optional<User> userFromDb = userRepository.findByEmail(email);
+			if (!userFromDb.isPresent())
+				throw new RuntimeException("There is no user with the given email address.");
+
+			UserDTO userDTO = convertToDTO(userFromDb.get());
+			return ResponseEntity.ok(userDTO);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 
 	public ResponseEntity<?> loanBook(BookLoanDTO bookLoanDTO) {
 		try {
@@ -181,6 +194,7 @@ public class UserService {
 
 	private UserDTO convertToDTO(User user) {
 		UserDTO userDTO = new UserDTO();
+		userDTO.setUserId(user.getUserId());
 		userDTO.setFirstName(user.getFirstName());
 		userDTO.setLastName(user.getLastName());
 		userDTO.setEmail(user.getEmail());

@@ -103,6 +103,26 @@ class UserServiceTest {
 	}
 
 	@Test
+	void testGetByEmailBadEmail() {
+		when(userRepository.findByEmail(user1.getEmail())).thenReturn(Optional.empty());
+
+		ResponseEntity<?> response = userService.getByEmail(user1.getEmail());
+
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertEquals("There is no user with the given email address.", response.getBody());
+	}
+
+	@Test
+	void testGetByEmail() {
+		when(userRepository.findByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
+
+		ResponseEntity<?> response = userService.getByEmail(user1.getEmail());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(convertToDTO(user1), response.getBody());
+	}
+
+	@Test
 	void testLoanBookBadUserId() {
 		when(userRepository.findById(user1.getUserId())).thenReturn(Optional.empty());
 
@@ -260,6 +280,7 @@ class UserServiceTest {
 
 	private UserDTO convertToDTO(User user) {
 		UserDTO userDTO = new UserDTO();
+		userDTO.setUserId(user.getUserId());
 		userDTO.setFirstName(user.getFirstName());
 		userDTO.setLastName(user.getLastName());
 		userDTO.setEmail(user.getEmail());

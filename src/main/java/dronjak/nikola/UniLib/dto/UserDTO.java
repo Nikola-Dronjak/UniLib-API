@@ -5,26 +5,38 @@ import java.util.Objects;
 
 public class UserDTO {
 
+	private int userId;
+
 	private String firstName;
-	
+
 	private String lastName;
-	
+
 	private String email;
-	
+
 	private String password;
-	
+
 	private GregorianCalendar dateOfBirth;
-	
+
 	public UserDTO() {
-		
+
 	}
 
-	public UserDTO(String firstName, String lastName, String email, String password, GregorianCalendar dateOfBirth) {
+	public UserDTO(int userId, String firstName, String lastName, String email, String password,
+			GregorianCalendar dateOfBirth) {
+		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getFirstName() {
@@ -69,13 +81,13 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "UserDTO [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", password="
-				+ password + ", dateOfBirth=" + dateOfBirth + "]";
+		return "UserDTO [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", dateOfBirth=" + dateOfBirth + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateOfBirth, email, firstName, lastName, password);
+		return Objects.hash(dateOfBirth, email, firstName, lastName, password, userId);
 	}
 
 	@Override
@@ -89,6 +101,6 @@ public class UserDTO {
 		UserDTO other = (UserDTO) obj;
 		return Objects.equals(dateOfBirth, other.dateOfBirth) && Objects.equals(email, other.email)
 				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName)
-				&& Objects.equals(password, other.password);
+				&& Objects.equals(password, other.password) && userId == other.userId;
 	}
 }
