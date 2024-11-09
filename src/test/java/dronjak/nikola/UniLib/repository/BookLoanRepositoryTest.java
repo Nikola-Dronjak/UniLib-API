@@ -89,6 +89,26 @@ class BookLoanRepositoryTest {
 		bookLoan1 = null;
 		bookLoan2 = null;
 	}
+	
+	@Test
+	void testFindActiveBookLoansByUserIdBadUserId() {
+		bookLoanRepository.save(bookLoan1);
+		
+		List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(2);
+
+		assertEquals(0, bookLoans.size());
+	}
+
+	@Test
+	void testFindActiveBookLoansByUserId() {
+		bookLoanRepository.save(bookLoan1);
+		bookLoanRepository.save(bookLoan2);
+
+		List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(1);;
+
+		assertEquals(1, bookLoans.size());
+		assertEquals(bookLoan1, bookLoans.get(0));
+	}
 
 	@Test
 	void testFindAllEmpty() {

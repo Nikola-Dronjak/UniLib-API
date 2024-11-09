@@ -5,14 +5,19 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +38,7 @@ import dronjak.nikola.UniLib.domain.BookGenre;
 import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.User;
 import dronjak.nikola.UniLib.domain.UserRole;
+import dronjak.nikola.UniLib.dto.BookDTO;
 import dronjak.nikola.UniLib.dto.BookLoanDTO;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.service.UserService;
@@ -100,6 +106,30 @@ class UserControllerTest {
 
 		bookLoan1 = null;
 		bookLoan2 = null;
+	}
+
+	void testGetAllBooksLoanedByUserError() throws Exception {
+		try {
+			lenient().when(userService.getAllBooksLoanedByUserId(1)).thenThrow(new RuntimeException());
+		} catch (Exception e) {
+			MockMvc mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+			mockMvc.perform(get("/api/users/myBooks/1").contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isInternalServerError());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	void testGetAllBooksLoanedByUser() throws Exception {
+		List<BookLoan> bookLoans = new ArrayList<BookLoan>();
+		bookLoans.add(bookLoan1);
+		List<BookDTO> loanedBookDTOs = Arrays.asList(convertToDTO(book1));
+		when(userService.getAllBooksLoanedByUserId(1)).thenReturn((ResponseEntity) ResponseEntity.ok(loanedBookDTOs));
+
+		String loanedBooksJson = new ObjectMapper().writeValueAsString(loanedBookDTOs);
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+		mockMvc.perform(get("/api/users/myBooks/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json(loanedBooksJson));
 	}
 
 	@Test
@@ -184,6 +214,21 @@ class UserControllerTest {
 		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 		mockMvc.perform(delete("/api/users/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().json(userJson));
+	}
+
+	private BookDTO convertToDTO(Book book) {
+		BookDTO bookDTO = new BookDTO();
+		bookDTO.setIsbn(book.getIsbn());
+		bookDTO.setTitle(book.getTitle());
+		bookDTO.setGenre(book.getGenre());
+		bookDTO.setNumberOfPages(book.getNumberOfPages());
+		bookDTO.setNumberOfCopies(book.getNumberOfCopies());
+		bookDTO.setAvailable(book.getAvailable());
+
+		Set<Integer> authorIds = book.getAuthors().stream().map(Author::getAuthorId).collect(Collectors.toSet());
+		bookDTO.setAuthorIds(authorIds);
+
+		return bookDTO;
 	}
 
 	private UserDTO convertToDTO(User user) {

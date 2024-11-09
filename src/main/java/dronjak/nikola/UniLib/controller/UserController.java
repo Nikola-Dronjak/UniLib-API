@@ -22,6 +22,11 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@GetMapping("/myBooks/{userId}")
+	public ResponseEntity<?> getAllBooksLoanedByUser(@PathVariable Integer userId) {
+		return userService.getAllBooksLoanedByUserId(userId);
+	}
+	
 	@GetMapping("/{email}")
 	public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
 		return userService.getByEmail(email);

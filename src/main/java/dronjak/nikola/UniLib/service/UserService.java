@@ -1,10 +1,13 @@
 package dronjak.nikola.UniLib.service;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dronjak.nikola.UniLib.domain.Author;
 import dronjak.nikola.UniLib.domain.Book;
 import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.User;
 import dronjak.nikola.UniLib.domain.UserRole;
+import dronjak.nikola.UniLib.dto.BookDTO;
 import dronjak.nikola.UniLib.dto.BookLoanDTO;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.repository.BookLoanRepository;
@@ -43,6 +48,26 @@ public class UserService {
 	public UserService() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		this.validator = factory.getValidator();
+	}
+	
+	public ResponseEntity<?> getAllBooksLoanedByUserId(Integer id) {
+		try {
+			Optional<User> userFromDb = userRepository.findById(id);
+			if (!userFromDb.isPresent())
+				throw new RuntimeException("There is no user with the given userId.");
+			
+			List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(id);
+			
+			List<Book> loanedBooks = new ArrayList<Book>();
+			for (BookLoan bookLoan : bookLoans) {
+				loanedBooks.add(bookLoan.getBook());
+			}
+			
+			List<BookDTO> loanedBookDTOs = loanedBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
+			return ResponseEntity.ok(loanedBookDTOs);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
 	}
 	
 	public ResponseEntity<?> getByEmail(String email) {
@@ -190,6 +215,21 @@ public class UserService {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
+	}
+	
+	private BookDTO convertToDTO(Book book) {
+		BookDTO bookDTO = new BookDTO();
+		bookDTO.setIsbn(book.getIsbn());
+		bookDTO.setTitle(book.getTitle());
+		bookDTO.setGenre(book.getGenre());
+		bookDTO.setNumberOfPages(book.getNumberOfPages());
+		bookDTO.setNumberOfCopies(book.getNumberOfCopies());
+		bookDTO.setAvailable(book.getAvailable());
+
+		Set<Integer> authorIds = book.getAuthors().stream().map(Author::getAuthorId).collect(Collectors.toSet());
+		bookDTO.setAuthorIds(authorIds);
+
+		return bookDTO;
 	}
 
 	private UserDTO convertToDTO(User user) {

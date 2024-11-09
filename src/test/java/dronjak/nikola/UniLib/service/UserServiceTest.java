@@ -4,11 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +29,7 @@ import dronjak.nikola.UniLib.domain.BookGenre;
 import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.User;
 import dronjak.nikola.UniLib.domain.UserRole;
+import dronjak.nikola.UniLib.dto.BookDTO;
 import dronjak.nikola.UniLib.dto.BookLoanDTO;
 import dronjak.nikola.UniLib.dto.UserDTO;
 import dronjak.nikola.UniLib.repository.BookLoanRepository;
@@ -100,6 +105,31 @@ class UserServiceTest {
 
 		bookLoan1 = null;
 		bookLoan2 = null;
+	}
+
+	@Test
+	void testGetAllBooksLoanedByUserIdBadUserId() {
+		when(userRepository.findById(1)).thenThrow(new RuntimeException("There is no user with the given userId."));
+
+		ResponseEntity<?> response = userService.getAllBooksLoanedByUserId(1);
+
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertEquals("There is no user with the given userId.", response.getBody());
+	}
+
+	@Test
+	void testGetAllBooksLoanedByUserId() {
+		List<BookLoan> bookLoans = new ArrayList<BookLoan>();
+		bookLoans.add(bookLoan1);
+		when(userRepository.findById(1)).thenReturn(Optional.of(user1));
+		when(bookLoanRepository.findActiveBookLoansByUserId(1)).thenReturn(bookLoans);
+
+		List<BookDTO> loanedBookDTOs = Arrays.asList(convertToDTO(book1));
+
+		ResponseEntity<?> response = userService.getAllBooksLoanedByUserId(1);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(loanedBookDTOs, response.getBody());
 	}
 
 	@Test
@@ -276,6 +306,21 @@ class UserServiceTest {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(convertToDTO(user1), response.getBody());
+	}
+
+	private BookDTO convertToDTO(Book book) {
+		BookDTO bookDTO = new BookDTO();
+		bookDTO.setIsbn(book.getIsbn());
+		bookDTO.setTitle(book.getTitle());
+		bookDTO.setGenre(book.getGenre());
+		bookDTO.setNumberOfPages(book.getNumberOfPages());
+		bookDTO.setNumberOfCopies(book.getNumberOfCopies());
+		bookDTO.setAvailable(book.getAvailable());
+
+		Set<Integer> authorIds = book.getAuthors().stream().map(Author::getAuthorId).collect(Collectors.toSet());
+		bookDTO.setAuthorIds(authorIds);
+
+		return bookDTO;
 	}
 
 	private UserDTO convertToDTO(User user) {
