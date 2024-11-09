@@ -35,7 +35,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.cors(Customizer.withDefaults()).csrf(customizer -> customizer.disable())
 				.authorizeHttpRequests(
-						request -> request.requestMatchers("/api/users/register", "/api/users/login", "/h2-console/**")
+						request -> request.requestMatchers("/api/authors", "/api/books", "/api/users/register", "/api/users/login", "/h2-console/**")
 								.permitAll().anyRequest().authenticated())
 				.headers(headers -> headers.disable()).httpBasic(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
