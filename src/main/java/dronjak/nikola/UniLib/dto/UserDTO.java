@@ -3,6 +3,8 @@ package dronjak.nikola.UniLib.dto;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+import dronjak.nikola.UniLib.domain.UserRole;
+
 public class UserDTO {
 
 	private int userId;
@@ -15,19 +17,22 @@ public class UserDTO {
 
 	private String password;
 
+	private UserRole role;
+
 	private GregorianCalendar dateOfBirth;
 
 	public UserDTO() {
 
 	}
 
-	public UserDTO(int userId, String firstName, String lastName, String email, String password,
+	public UserDTO(int userId, String firstName, String lastName, String email, String password, UserRole role,
 			GregorianCalendar dateOfBirth) {
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
+		this.role = role;
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -71,6 +76,14 @@ public class UserDTO {
 		this.password = password;
 	}
 
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+
 	public GregorianCalendar getDateOfBirth() {
 		return dateOfBirth;
 	}
@@ -82,12 +95,12 @@ public class UserDTO {
 	@Override
 	public String toString() {
 		return "UserDTO [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", password=" + password + ", dateOfBirth=" + dateOfBirth + "]";
+				+ ", password=" + password + ", role=" + role + ", dateOfBirth=" + dateOfBirth + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateOfBirth, email, firstName, lastName, password, userId);
+		return Objects.hash(dateOfBirth, email, firstName, lastName, password, role, userId);
 	}
 
 	@Override
@@ -101,6 +114,6 @@ public class UserDTO {
 		UserDTO other = (UserDTO) obj;
 		return Objects.equals(dateOfBirth, other.dateOfBirth) && Objects.equals(email, other.email)
 				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName)
-				&& Objects.equals(password, other.password) && userId == other.userId;
+				&& Objects.equals(password, other.password) && role == other.role && userId == other.userId;
 	}
 }

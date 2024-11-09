@@ -199,6 +199,7 @@ public class UserService {
 		userDTO.setLastName(user.getLastName());
 		userDTO.setEmail(user.getEmail());
 		userDTO.setPassword(user.getPassword());
+		userDTO.setRole(user.getRole());
 		userDTO.setDateOfBirth(user.getDateOfBirth());
 
 		return userDTO;
