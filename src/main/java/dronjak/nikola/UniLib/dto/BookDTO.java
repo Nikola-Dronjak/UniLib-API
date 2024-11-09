@@ -17,19 +17,22 @@ public class BookDTO {
 
 	private Integer numberOfCopies;
 
+	private boolean available;
+
 	private Set<Integer> authorIds;
 
 	public BookDTO() {
+
 	}
 
 	public BookDTO(String isbn, String title, BookGenre genre, Integer numberOfPages, Integer numberOfCopies,
-			Set<Integer> authorIds) {
-		super();
+			boolean available, Set<Integer> authorIds) {
 		this.isbn = isbn;
 		this.title = title;
 		this.genre = genre;
 		this.numberOfPages = numberOfPages;
 		this.numberOfCopies = numberOfCopies;
+		this.available = available;
 		this.authorIds = authorIds;
 	}
 
@@ -73,6 +76,14 @@ public class BookDTO {
 		this.numberOfCopies = numberOfCopies;
 	}
 
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
 	public Set<Integer> getAuthorIds() {
 		return authorIds;
 	}
@@ -84,12 +95,12 @@ public class BookDTO {
 	@Override
 	public String toString() {
 		return "BookDTO [isbn=" + isbn + ", title=" + title + ", genre=" + genre + ", numberOfPages=" + numberOfPages
-				+ ", numberOfCopies=" + numberOfCopies + ", authorIds=" + authorIds + "]";
+				+ ", numberOfCopies=" + numberOfCopies + ", available=" + available + ", authorIds=" + authorIds + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(authorIds, genre, isbn, numberOfCopies, numberOfPages, title);
+		return Objects.hash(authorIds, available, genre, isbn, numberOfCopies, numberOfPages, title);
 	}
 
 	@Override
@@ -101,8 +112,8 @@ public class BookDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		BookDTO other = (BookDTO) obj;
-		return Objects.equals(authorIds, other.authorIds) && genre == other.genre && Objects.equals(isbn, other.isbn)
-				&& Objects.equals(numberOfCopies, other.numberOfCopies)
+		return Objects.equals(authorIds, other.authorIds) && available == other.available && genre == other.genre
+				&& Objects.equals(isbn, other.isbn) && Objects.equals(numberOfCopies, other.numberOfCopies)
 				&& Objects.equals(numberOfPages, other.numberOfPages) && Objects.equals(title, other.title);
 	}
 }

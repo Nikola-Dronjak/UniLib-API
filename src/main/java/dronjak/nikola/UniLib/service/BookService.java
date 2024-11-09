@@ -152,6 +152,7 @@ public class BookService {
 		bookDTO.setGenre(book.getGenre());
 		bookDTO.setNumberOfPages(book.getNumberOfPages());
 		bookDTO.setNumberOfCopies(book.getNumberOfCopies());
+		bookDTO.setAvailable(book.getAvailable());
 
 		Set<Integer> authorIds = book.getAuthors().stream().map(Author::getAuthorId).collect(Collectors.toSet());
 		bookDTO.setAuthorIds(authorIds);

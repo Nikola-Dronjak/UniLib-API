@@ -194,6 +194,7 @@ class BookControllerTest {
 		bookDTO.setGenre(book.getGenre());
 		bookDTO.setNumberOfPages(book.getNumberOfPages());
 		bookDTO.setNumberOfCopies(book.getNumberOfCopies());
+		bookDTO.setAvailable(book.getAvailable());
 
 		Set<Integer> authorIds = new HashSet<Integer>();
 		for (Author author : book.getAuthors()) {
