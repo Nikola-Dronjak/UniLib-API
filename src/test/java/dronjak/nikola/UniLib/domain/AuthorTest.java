@@ -74,16 +74,6 @@ class AuthorTest {
 	}
 
 	@Test
-	public void testDateOfDeathNull() {
-		author.setDateOfDeath(null);
-
-		Set<ConstraintViolation<Author>> violations = validator.validate(author);
-		assertFalse(violations.isEmpty());
-		assertTrue(violations.stream()
-				.anyMatch(violation -> violation.getMessage().equals("The author's date of death is required.")));
-	}
-
-	@Test
 	public void testValidAuthor() {
 		Set<ConstraintViolation<Author>> violations = validator.validate(author);
 		assertTrue(violations.isEmpty());

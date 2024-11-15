@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import dronjak.nikola.UniLib.domain.BookLoan;
 import dronjak.nikola.UniLib.domain.Author;
@@ -24,6 +25,7 @@ import dronjak.nikola.UniLib.domain.UserRole;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BookLoanRepositoryTest {
@@ -31,7 +33,7 @@ class BookLoanRepositoryTest {
 	User user;
 
 	Book book;
-	
+
 	Author author;
 
 	Set<Author> authors;
@@ -89,11 +91,11 @@ class BookLoanRepositoryTest {
 		bookLoan1 = null;
 		bookLoan2 = null;
 	}
-	
+
 	@Test
 	void testFindActiveBookLoansByUserIdBadUserId() {
 		bookLoanRepository.save(bookLoan1);
-		
+
 		List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(2);
 
 		assertEquals(0, bookLoans.size());
@@ -104,7 +106,8 @@ class BookLoanRepositoryTest {
 		bookLoanRepository.save(bookLoan1);
 		bookLoanRepository.save(bookLoan2);
 
-		List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(1);;
+		List<BookLoan> bookLoans = bookLoanRepository.findActiveBookLoansByUserId(1);
+		;
 
 		assertEquals(1, bookLoans.size());
 		assertEquals(bookLoan1, bookLoans.get(0));

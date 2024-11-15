@@ -51,7 +51,7 @@ public class Book {
 		this.numberOfPages = numberOfPages;
 		this.numberOfCopies = numberOfCopies;
 		this.available = available;
-		this.authors = (authors == null) ? authors : new HashSet<Author>();
+		this.authors = (authors != null) ? authors : new HashSet<Author>();
 	}
 
 	public String getIsbn() {
