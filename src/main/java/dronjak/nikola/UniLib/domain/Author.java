@@ -26,8 +26,6 @@ public class Author {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private GregorianCalendar dateOfBirth;
 
-	@NotNull(message = "The author's date of death is required.")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private GregorianCalendar dateOfDeath;
 
 	@ManyToMany

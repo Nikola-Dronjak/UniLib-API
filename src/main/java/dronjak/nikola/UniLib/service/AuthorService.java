@@ -68,10 +68,10 @@ public class AuthorService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
 			}
 
-			if (authorDTO.getDateOfBirth().after(authorDTO.getDateOfDeath()))
+			if (authorDTO.getDateOfDeath() != null && authorDTO.getDateOfBirth().after(authorDTO.getDateOfDeath()))
 				throw new RuntimeException("The author's date of birth has to be before his/hers date of death.");
 
-			if (authorDTO.getDateOfDeath().before(authorDTO.getDateOfBirth()))
+			if (authorDTO.getDateOfDeath() != null && authorDTO.getDateOfDeath().before(authorDTO.getDateOfBirth()))
 				throw new RuntimeException("The author's date of death has to be after hist/hers date of birth.");
 
 			if (authorRepository.findByName(authorDTO.getName()).isPresent())
@@ -101,10 +101,10 @@ public class AuthorService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
 			}
 
-			if (authorDTO.getDateOfBirth().after(authorDTO.getDateOfDeath()))
+			if (authorDTO.getDateOfDeath() != null && authorDTO.getDateOfBirth().after(authorDTO.getDateOfDeath()))
 				throw new RuntimeException("The author's date of birth has to be before his/hers date of death.");
 
-			if (authorDTO.getDateOfDeath().before(authorDTO.getDateOfBirth()))
+			if (authorDTO.getDateOfDeath() != null && authorDTO.getDateOfDeath().before(authorDTO.getDateOfBirth()))
 				throw new RuntimeException("The author's date of death has to be after hist/hers date of birth.");
 
 			if (!authorFromDb.get().getName().equals(authorDTO.getName())) {
